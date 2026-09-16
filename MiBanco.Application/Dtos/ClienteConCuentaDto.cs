@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace MiBanco.Application.Dtos
 {
-    public class CuentaDto
+    internal class ClienteCon_CuentaDto
     {
-
-        public int IdCuenta { get; set; }
-        public decimal Saldo {get; set;}
     }
 }
