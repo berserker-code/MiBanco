@@ -4,6 +4,7 @@ using MiBanco.Domain.Interfaces;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,13 +21,13 @@ namespace MiBanco.Infraestructure.Repositorios
             _connectionString = connectionString;
         }
 
-        public async Task<Transaccion> AgregarTransaccionAsync(Transaccion transaccion)
+        public async Task<Transaccion> AgregarTransaccionAsync(Transaccion transaccion, IDbConnection connection, IDbTransaction dbtransaction)
         {
-            using var connection = new MySqlConnection(_connectionString);
+            
             string sql = @"INSERT INTO Transactions (Tipo_transacción, Movimiento, Saldo_Actual, Fecha, ID_Cuenta)
             VALUES (@FormaTransaccion, @Movimiento, @SaldoTotal, @Fecha, @IdCuenta);
             SELECT LAST_INSERT_ID();";
-            int nuevoId = await connection.QuerySingleAsync<int>(sql, transaccion);
+            int nuevoId = await connection.QuerySingleAsync<int>(sql, transaccion, dbtransaction);
             transaccion.IdTransaccion = nuevoId;
             return transaccion;
             

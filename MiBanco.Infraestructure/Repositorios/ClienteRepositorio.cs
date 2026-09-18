@@ -20,12 +20,12 @@ namespace MiBanco.Infraestructure.Repositorios
             _connectionString = connectionString;
         }
 
-        public async Task<Cliente> AgregarClienteAsync(Cliente cliente, IDbConnection connection, IDbTransaction transaction)
+        public async Task<Cliente> AgregarClienteAsync(Cliente cliente, IDbConnection connection, IDbTransaction dbtransaction)
         {
             string sql = @"INSERT INTO Clients (Nombre, Apellido, Edad, Email, Direccion)
             VALUES (@Nombre, @Apellido, @Edad, @Email, @Direccion);
             SELECT LAST_INSERT_ID();";
-            int nuevoId = await connection.QuerySingleAsync<int>(sql, cliente, transaction);
+            int nuevoId = await connection.QuerySingleAsync<int>(sql, cliente, dbtransaction);
             cliente.Id = nuevoId;
             return cliente;
         }

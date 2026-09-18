@@ -10,7 +10,7 @@ namespace MiBanco.Domain.Interfaces
     public interface IClienteRepositorio
     {
 
-        Task<Cliente> AgregarClienteAsync(Cliente cliente, IDbConnection connection, IDbTransaction transaction);
+        Task<Cliente> AgregarClienteAsync(Cliente cliente, IDbConnection connection, IDbTransaction dbtransaction);
         Task<Cliente> ObtenerPorIdAsync(int Id);
         Task<IEnumerable<Cliente>> ObtenerTodosAsync();
 

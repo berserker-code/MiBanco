@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace MiBanco.Application.Dtos
 {
-    internal class ClienteCon_CuentaDto
+    public class ClienteConCuentaDto
     {
+        public ClienteDto Cliente { get; set; }
+        public CuentaDto Cuenta { get; set; }
+
     }
 }
