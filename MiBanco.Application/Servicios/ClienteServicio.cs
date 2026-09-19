@@ -83,5 +83,25 @@ namespace MiBanco.Application.Servicios
 
         }
 
+        public async Task<ClienteDto> ObtenerPorIdAsync(int Id)
+        {
+            var cliente = await _clienteRepositorio.ObtenerPorIdAsync(Id);
+
+            if (cliente == null)
+            {
+                throw new KeyNotFoundException($"No se encontró el cliente con Id {Id}");
+            }
+
+            return new ClienteDto
+            {
+                Id = cliente.Id,
+                Nombre = cliente.Nombre,
+                Apellido = cliente.Apellido,
+                Edad = cliente.Edad,
+                Email = cliente.Email,
+                Direccion = cliente.Direccion
+            };
+        }
+
     }
 }

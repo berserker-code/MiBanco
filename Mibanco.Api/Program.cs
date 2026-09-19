@@ -1,3 +1,4 @@
+using MiBanco.Application.Servicios;
 using MiBanco.Domain.Interfaces;
 using MiBanco.Infraestructure.Repositorios;
 
@@ -15,6 +16,22 @@ string connectionString = builder.Configuration.GetConnectionString("MiBancoDb")
 builder.Services.AddScoped<IClienteRepositorio>(sp => new ClienteRepositorio(connectionString));
 builder.Services.AddScoped<ICuentaRepositorio>(sp => new CuentaRepositorio(connectionString));
 builder.Services.AddScoped<ITransaccionRepositorio>(sp => new TransaccionRepositorio(connectionString));
+
+builder.Services.AddScoped<ClienteServicio>(sp =>
+    new ClienteServicio(
+        sp.GetRequiredService<IClienteRepositorio>(),
+        sp.GetRequiredService<ICuentaRepositorio>(),
+        connectionString
+        )
+    );
+
+builder.Services.AddScoped<TransaccionServicio>(sp =>
+    new TransaccionServicio(
+        sp.GetRequiredService<ICuentaRepositorio>(),
+        sp.GetRequiredService<ITransaccionRepositorio>(),
+        connectionString
+        )
+    );
 
 
 var app = builder.Build();

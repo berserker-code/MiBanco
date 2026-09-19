@@ -9,11 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace MiBanco.Application.Servicios
 {
     public class TransaccionServicio
     {
-        private readonly ICuentaRepositorio  _cuentaRepositorio;
+        private readonly ICuentaRepositorio _cuentaRepositorio;
         private readonly ITransaccionRepositorio _transaccionRepositorio;
         private readonly string _connectionString;
 
@@ -24,14 +25,15 @@ namespace MiBanco.Application.Servicios
             _connectionString = connectionString;
         }
 
+
         public async Task<TransaccionDto> RealizarTransaccionAsync(CrearTransaccionDto dto)
         {
 
             decimal validarSaldo = await _cuentaRepositorio.ObtenerSaldoAsync(dto.IdCuenta);
 
-            if (dto.Movimiento <= 0) 
+            if (dto.Movimiento <= 0)
             {
-                throw new InvalidOperationException("no tiene saldo");
+                throw new InvalidOperationException("El monto debe ser mayor a cero");
             }
             else if (dto.FormaTransaccion == TipoTransaccion.Retiro && dto.Movimiento > validarSaldo)
             {
@@ -40,7 +42,7 @@ namespace MiBanco.Application.Servicios
 
             using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();
-            using var transaction =  await connection.BeginTransactionAsync();
+            using var transaction = await connection.BeginTransactionAsync();
 
             try
             {
@@ -58,9 +60,44 @@ namespace MiBanco.Application.Servicios
                     throw new InvalidOperationException("Tipo de transacción no válido");
                 }
 
-                var result = await _cuentaRepositorio.ActualizarSaldoAsync(dto.IdCuenta, nuevoSaldo, connection, transaction); 
+                var result = await _cuentaRepositorio.ActualizarSaldoAsync(dto.IdCuenta, nuevoSaldo, connection, transaction);
 
-            }catch (Exception ) {
+                if (!result)
+                {
+                    throw new InvalidCastException("No se pudo actualizar el saldo");
+                }
 
+                var dtransaccion = new Transaccion
+                {
+
+                    FormaTransaccion = dto.FormaTransaccion,
+                    Movimiento = dto.Movimiento,
+                    SaldoTotal = nuevoSaldo,
+                    Fecha = DateTime.Now,
+                    IdCuenta = dto.IdCuenta,
+
+                };
+
+                dtransaccion = await _transaccionRepositorio.AgregarTransaccionAsync(dtransaccion, connection, transaction);
+
+                await transaction.CommitAsync();
+
+                return new TransaccionDto
+                {
+                    IdTransaccion = dtransaccion.IdTransaccion,
+                    FormaTransaccion = dtransaccion.FormaTransaccion,
+                    Movimiento = dtransaccion.Movimiento,
+                    SaldoTotal = dtransaccion.SaldoTotal,
+                    Fecha = dtransaccion.Fecha,
+
+                };
+
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
 }
