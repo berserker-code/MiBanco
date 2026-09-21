@@ -103,5 +103,20 @@ namespace MiBanco.Application.Servicios
             };
         }
 
+
+        public async Task<IEnumerable<ClienteDto>> ObtenerTodosAsync()
+        {
+            var clientes = await _clienteRepositorio.ObtenerTodosAsync();
+
+            return clientes.Select(t => new ClienteDto
+            {
+                Id = t.Id,
+                Nombre = t.Nombre,
+                Apellido = t.Apellido,
+                Edad = t.Edad,
+                Email = t.Email,
+                Direccion = t.Direccion
+            });
+        }
     }
 }

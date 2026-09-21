@@ -64,7 +64,7 @@ namespace MiBanco.Application.Servicios
 
                 if (!result)
                 {
-                    throw new InvalidCastException("No se pudo actualizar el saldo");
+                    throw new InvalidOperationException("No se pudo actualizar el saldo");
                 }
 
                 var dtransaccion = new Transaccion
@@ -98,6 +98,20 @@ namespace MiBanco.Application.Servicios
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+
+        public async Task<IEnumerable<TransaccionDto>> ObtenerHistorialAsync(int IdCuenta)
+        {
+            var transacciones = await _transaccionRepositorio.VerHistorialAsync(IdCuenta);
+
+            return transacciones.Select(t => new TransaccionDto
+            {
+                IdTransaccion = t.IdTransaccion,
+                FormaTransaccion = t.FormaTransaccion,
+                Movimiento = t.Movimiento,
+                SaldoTotal = t.SaldoTotal,
+                Fecha = t.Fecha,
+            });
         }
     }
 }

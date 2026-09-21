@@ -42,5 +42,12 @@ namespace MiBanco.Api.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ObtenerTodosAsync()
+        {
+            var clientes = await _clienteServicio.ObtenerTodosAsync();
+            return Ok(clientes);
+        }
+
     }
 }

@@ -27,7 +27,16 @@ namespace MiBanco.Infraestructure.Repositorios
             string sql = @"INSERT INTO Transactions (Tipo_transacción, Movimiento, Saldo_Actual, Fecha, ID_Cuenta)
             VALUES (@FormaTransaccion, @Movimiento, @SaldoTotal, @Fecha, @IdCuenta);
             SELECT LAST_INSERT_ID();";
-            int nuevoId = await connection.QuerySingleAsync<int>(sql, transaccion, dbtransaction);
+            var parametros = new
+            {
+                FormaTransaccion = transaccion.FormaTransaccion.ToString(),
+                transaccion.Movimiento,
+                transaccion.SaldoTotal,
+                transaccion.Fecha,
+                transaccion.IdCuenta
+            };
+
+            int nuevoId = await connection.QuerySingleAsync<int>(sql, parametros, dbtransaction);
             transaccion.IdTransaccion = nuevoId;
             return transaccion;
             
@@ -45,7 +54,7 @@ namespace MiBanco.Infraestructure.Repositorios
         {
             using var connection = new MySqlConnection(_connectionString);
             string sql = "SELECT ID_Transaction AS IdTransaccion , Tipo_transacción AS FormaTransaccion,Movimiento, Saldo_Actual AS SaldoTotal, Fecha, ID_Cuenta AS IdCuenta FROM Transactions WHERE ID_Cuenta = @IdCuenta ORDER BY Fecha DESC ";
-            return await connection.QueryAsync<Transaccion>(sql);
+            return await connection.QueryAsync<Transaccion>(sql, new {IdCuenta = IdCuenta});
         }
     }
 }
