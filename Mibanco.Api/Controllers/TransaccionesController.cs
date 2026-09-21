@@ -38,5 +38,12 @@ namespace MiBanco.Api.Controllers
             var historial = await _transaccionServicio.ObtenerHistorialAsync(IdCuenta);
             return Ok(historial);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerSaldoAsync(int IdCuenta)
+        {
+            var saldo = await _transaccionServicio.ObtenerSaldoTotalAsync(IdCuenta);
+            return Ok(saldo);
+        }
     }
 }
