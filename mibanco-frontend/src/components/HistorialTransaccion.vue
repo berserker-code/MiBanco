@@ -1,8 +1,8 @@
 <script setup>
-import { watch, ref } from "vue";
+import { ref, watch } from "vue";
 
 const props = defineProps({
-  idCliente: {
+  idCuenta: {
     type: Number,
     required: true,
   },
@@ -12,21 +12,21 @@ const props = defineProps({
   },
 });
 
+const historial = ref([]);
 const cargando = ref(false);
-const cuenta = ref(null);
 const mensajeError = ref(null);
 
-async function consultarCuenta(idCliente) {
+async function obtenerHistorial() {
+  historial.value = [];
   cargando.value = true;
-  cuenta.value = null;
   mensajeError.value = null;
 
   try {
-    const respuesta = await fetch(`https://localhost:7083/api/cuentas/${idCliente}`);
+    const respuesta = await fetch(`https://localhost:7083/api/transacciones/${props.idCuenta}`);
     if (!respuesta.ok) {
-      throw new Error("Error al consultar la cuenta");
+      throw new Error("Error al obtener el historial de transacciones");
     }
-    cuenta.value = await respuesta.json();
+    historial.value = await respuesta.json();
   } catch (error) {
     mensajeError.value = error.message;
   } finally {
@@ -35,10 +35,10 @@ async function consultarCuenta(idCliente) {
 }
 
 watch(
-  () => [props.idCliente, props.trigger],
+  () => [props.idCuenta, props.trigger],
   ([nuevoId]) => {
     if (nuevoId) {
-      consultarCuenta(nuevoId);
+      obtenerHistorial();
     }
   },
   { immediate: true },
@@ -46,9 +46,10 @@ watch(
 </script>
 
 <template>
-  <div v-if="cuenta" style="margin-top: 1rem">
-    <p><strong>Cuenta N°:</strong> {{ cuenta.idCuenta }}</p>
-    <p><strong>Saldo:</strong> {{ cuenta.saldo }}</p>
-  </div>
+  <ul>
+    <li v-for="t in historial" :key="t.idTransaccion">
+      {{ t.formaTransaccion }} - ${{ t.movimiento }} - saldo resultante: $ {{ t.saldoTotal }}
+    </li>
+  </ul>
   <p v-if="mensajeError" style="color: red">{{ mensajeError }}</p>
 </template>

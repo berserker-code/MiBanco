@@ -34,7 +34,7 @@ async function registrarCliente() {
     }
     const datos = await respuesta.json();
     mensajeExito.value = `Cliente ${datos.cliente.nombre} registrado con cuenta N° ${datos.cuenta.idCuenta}`;
-    emit("cliente-registrado", datos.cliente.id);
+    emit("cliente-registrado", { idCliente: datos.cliente.id, idCuenta: datos.cuenta.idCuenta });
   } catch (error) {
     mensajeError.value = error.message;
   } finally {

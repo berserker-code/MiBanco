@@ -1,15 +1,22 @@
 <script setup>
 import HelloWorld from "./components/HelloWorld.vue";
-import TheWelcome from "./components/TheWelcome.vue";
 import RegistrarCliente from "./components/RegistrarCliente.vue";
 import ConsultarCuenta from "./components/ConsultarCuenta.vue";
-
+import RealizarTransaccion from "./components/RealizarTransaccion.vue";
+import HistorialTransaccion from "./components/HistorialTransaccion.vue";
 import { ref } from "vue";
 
 const idClienteActual = ref(null);
+const idCuentaActual = ref(null);
+const refrescarTrigger = ref(0);
 
-function onCLienteResgistrado(id) {
-  idClienteActual.value = id;
+function onCLienteResgistrado(datos) {
+  idClienteActual.value = datos.idCliente;
+  idCuentaActual.value = datos.idCuenta;
+}
+
+function onTransaccionRealizada() {
+  refrescarTrigger.value++;
 }
 </script>
 
@@ -19,13 +26,26 @@ function onCLienteResgistrado(id) {
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
-      <RegistrarCliente @cliente-registrado="onCLienteResgistrado" />
-      <ConsultarCuenta v-if="idClienteActual" :idCliente="idClienteActual" />
     </div>
   </header>
 
   <main>
-    <TheWelcome />
+    <RegistrarCliente @cliente-registrado="onCLienteResgistrado" />
+    <ConsultarCuenta
+      v-if="idClienteActual"
+      :idCliente="idClienteActual"
+      :trigger="refrescarTrigger"
+    />
+    <RealizarTransaccion
+      v-if="idCuentaActual"
+      :idCuenta="idCuentaActual"
+      @transaccion-realizada="onTransaccionRealizada"
+    />
+    <HistorialTransaccion
+      v-if="idCuentaActual"
+      :idCuenta="idCuentaActual"
+      :trigger="refrescarTrigger"
+    />
   </main>
 </template>
 
