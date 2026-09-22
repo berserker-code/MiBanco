@@ -1,7 +1,16 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-import RegistrarCliente from './components/RegistrarCliente.vue'
+import HelloWorld from "./components/HelloWorld.vue";
+import TheWelcome from "./components/TheWelcome.vue";
+import RegistrarCliente from "./components/RegistrarCliente.vue";
+import ConsultarCuenta from "./components/ConsultarCuenta.vue";
+
+import { ref } from "vue";
+
+const idClienteActual = ref(null);
+
+function onCLienteResgistrado(id) {
+  idClienteActual.value = id;
+}
 </script>
 
 <template>
@@ -10,13 +19,13 @@ import RegistrarCliente from './components/RegistrarCliente.vue'
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
-      <RegistrarCliente />
+      <RegistrarCliente @cliente-registrado="onCLienteResgistrado" />
+      <ConsultarCuenta v-if="idClienteActual" :idCliente="idClienteActual" />
     </div>
   </header>
 
   <main>
     <TheWelcome />
-    
   </main>
 </template>
 

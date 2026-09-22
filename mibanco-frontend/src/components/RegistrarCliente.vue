@@ -1,6 +1,8 @@
 <script setup>
 import { ref, reactive } from "vue";
 
+const emit = defineEmits(["cliente-registrado"]);
+
 const cliente = reactive({
   nombre: "",
   apellido: "",
@@ -32,6 +34,7 @@ async function registrarCliente() {
     }
     const datos = await respuesta.json();
     mensajeExito.value = `Cliente ${datos.cliente.nombre} registrado con cuenta N° ${datos.cuenta.idCuenta}`;
+    emit("cliente-registrado", datos.cliente.id);
   } catch (error) {
     mensajeError.value = error.message;
   } finally {
