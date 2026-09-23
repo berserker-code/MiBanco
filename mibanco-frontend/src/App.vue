@@ -5,6 +5,7 @@ import ConsultarCuenta from "./components/ConsultarCuenta.vue";
 import RealizarTransaccion from "./components/RealizarTransaccion.vue";
 import HistorialTransaccion from "./components/HistorialTransaccion.vue";
 import { ref } from "vue";
+import BuscarCliente from "./components/BuscarCliente.vue";
 
 const idClienteActual = ref(null);
 const idCuentaActual = ref(null);
@@ -46,6 +47,8 @@ function onTransaccionRealizada() {
       :idCuenta="idCuentaActual"
       :trigger="refrescarTrigger"
     />
+
+    <BuscarCliente @cliente-registrado="onCLienteResgistrado" />
   </main>
 </template>
 
