@@ -74,7 +74,7 @@ async function seleccionarCliente(idCliente) {
 
     <form @submit.prevent="buscarPorId">
       <input v-model.number="idBuscado" type="number" placeholder="buscar por id" />
-      <button type="submit" :disable="cargando">buscar</button>
+      <button type="submit" :disabled="cargando">buscar</button>
     </form>
 
     <div v-if="clienteEncontrado">

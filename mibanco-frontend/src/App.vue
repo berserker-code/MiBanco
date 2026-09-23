@@ -1,5 +1,4 @@
 <script setup>
-import HelloWorld from "./components/HelloWorld.vue";
 import RegistrarCliente from "./components/RegistrarCliente.vue";
 import ConsultarCuenta from "./components/ConsultarCuenta.vue";
 import RealizarTransaccion from "./components/RealizarTransaccion.vue";
@@ -44,9 +43,6 @@ function onTransaccionRealizada() {
         operaciones
       </button>
     </nav>
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
   </header>
 
   <main>
