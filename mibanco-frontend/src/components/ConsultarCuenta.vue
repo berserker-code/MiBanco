@@ -52,3 +52,14 @@ watch(
   </div>
   <p v-if="mensajeError" style="color: red">{{ mensajeError }}</p>
 </template>
+
+<style scoped>
+div {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: #f8fafc;
+  color: #1e293b;
+}
+</style>
