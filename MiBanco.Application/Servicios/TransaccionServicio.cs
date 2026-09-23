@@ -100,6 +100,19 @@ namespace MiBanco.Application.Servicios
             }
         }
 
+        public async Task<decimal> ObtenerSaldoTotalAsync(int IdCuenta)
+        {
+            var saldo = await _transaccionRepositorio.ObtenerSaldoTotalAsync(IdCuenta);
+
+            if(saldo == null)
+            {
+                throw new KeyNotFoundException($"No se encontró el saldo con Id {IdCuenta}");
+            }
+
+            return saldo; 
+        }
+
+
         public async Task<IEnumerable<TransaccionDto>> ObtenerHistorialAsync(int IdCuenta)
         {
             var transacciones = await _transaccionRepositorio.VerHistorialAsync(IdCuenta);
