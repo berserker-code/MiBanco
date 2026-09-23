@@ -7,6 +7,7 @@ import HistorialTransaccion from "./components/HistorialTransaccion.vue";
 import { ref } from "vue";
 import BuscarCliente from "./components/BuscarCliente.vue";
 
+const pestañaActiva = ref("registrar");
 const idClienteActual = ref(null);
 const idCuentaActual = ref(null);
 const refrescarTrigger = ref(0);
@@ -14,6 +15,7 @@ const refrescarTrigger = ref(0);
 function onCLienteResgistrado(datos) {
   idClienteActual.value = datos.idCliente;
   idCuentaActual.value = datos.idCuenta;
+  pestañaActiva.value = "operaciones";
 }
 
 function onTransaccionRealizada() {
@@ -25,30 +27,52 @@ function onTransaccionRealizada() {
   <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
+    <nav>
+      <button
+        @click="pestañaActiva = 'registrar'"
+        :class="{ activa: pestañaActiva === 'registrar' }"
+      >
+        registrar
+      </button>
+      <button @click="pestañaActiva = 'buscar'" :class="{ activa: pestañaActiva === 'buscar' }">
+        buscar cliente
+      </button>
+      <button
+        @click="pestañaActiva = 'operaciones'"
+        :class="{ activa: pestañaActiva === 'operaciones' }"
+      >
+        operaciones
+      </button>
+    </nav>
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
     </div>
   </header>
 
   <main>
-    <RegistrarCliente @cliente-registrado="onCLienteResgistrado" />
-    <ConsultarCuenta
-      v-if="idClienteActual"
-      :idCliente="idClienteActual"
-      :trigger="refrescarTrigger"
+    <RegistrarCliente
+      v-if="pestañaActiva === 'registrar'"
+      @cliente-registrado="onCLienteResgistrado"
     />
-    <RealizarTransaccion
-      v-if="idCuentaActual"
-      :idCuenta="idCuentaActual"
-      @transaccion-realizada="onTransaccionRealizada"
-    />
-    <HistorialTransaccion
-      v-if="idCuentaActual"
-      :idCuenta="idCuentaActual"
-      :trigger="refrescarTrigger"
-    />
+    <BuscarCliente v-if="pestañaActiva === 'buscar'" @cliente-registrado="onCLienteResgistrado" />
 
-    <BuscarCliente @cliente-registrado="onCLienteResgistrado" />
+    <div v-if="pestañaActiva === 'operaciones'">
+      <ConsultarCuenta
+        v-if="idClienteActual"
+        :idCliente="idClienteActual"
+        :trigger="refrescarTrigger"
+      />
+      <RealizarTransaccion
+        v-if="idCuentaActual"
+        :idCuenta="idCuentaActual"
+        @transaccion-realizada="onTransaccionRealizada"
+      />
+      <HistorialTransaccion
+        v-if="idCuentaActual"
+        :idCuenta="idCuentaActual"
+        :trigger="refrescarTrigger"
+      />
+    </div>
   </main>
 </template>
 
